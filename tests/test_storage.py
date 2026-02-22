@@ -50,11 +50,15 @@ class TestJsonStore(unittest.TestCase):
         self.assertIn("expected dict", buf.getvalue())
 
     def test_load_list_handles_os_error_on_read(self) -> None:
-        # Simulate OSError when reading the file
-        with patch.object(Path, "read_text", side_effect=OSError("boom")):
-            buf = io.StringIO()
+        """It should print an error and return [] when file read fails."""
+        # Ensure file exists so it passes the exists() check
+        self.file_path.write_text("[]", encoding="utf-8")
+
+        buf = io.StringIO()
+        with patch("src.storage.Path.read_text", side_effect=OSError("boom")):
             with redirect_stdout(buf):
                 items = self.store.load_list()
+
         self.assertEqual([], items)
         self.assertIn("Could not read", buf.getvalue())
 
