@@ -12,8 +12,8 @@ T = TypeVar("T")
 class JsonStore:
     """Stores a list of entities (dicts) in a JSON file.
 
-    Requirement: Handle invalid data in the file. Errors are printed and execution
-    continues (returns empty list or skips invalid entries).
+    Requirement: Handle invalid data in the file. Errors are printed and
+    execution continues (returns empty list or skips invalid entries).
     """
 
     def __init__(self, file_path: Path) -> None:
@@ -35,7 +35,9 @@ class JsonStore:
             return []
 
         if not isinstance(data, list):
-            print(f"[ERROR] Invalid data in {self._file_path}: expected a list.")
+            print(
+                f"[ERROR] Invalid data in {self._file_path}: expected a list."
+                )
             return []
 
         valid_items: List[Dict[str, Any]] = []
@@ -43,7 +45,8 @@ class JsonStore:
             if isinstance(item, dict):
                 valid_items.append(item)
             else:
-                print(f"[ERROR] Invalid item in {self._file_path}: expected dict.")
+                path = self._file_path
+                print(f"[ERROR] Invalid item in {path}: expected dict.")
         return valid_items
 
     def save_list(self, items: List[Dict[str, Any]]) -> None:
