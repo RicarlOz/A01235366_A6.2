@@ -1,0 +1,16 @@
+test_create_and_get_hotel (tests.test_services.TestReservationSystem.test_create_and_get_hotel) ... ok
+test_create_and_modify_customer (tests.test_services.TestReservationSystem.test_create_and_modify_customer) ... ok
+test_create_reservation_and_cancel (tests.test_services.TestReservationSystem.test_create_reservation_and_cancel) ... ok
+test_delete_hotel (tests.test_services.TestReservationSystem.test_delete_hotel) ... ok
+test_modify_hotel (tests.test_services.TestReservationSystem.test_modify_hotel) ... ok
+test_negative_cancel_non_existing_reservation (tests.test_services.TestReservationSystem.test_negative_cancel_non_existing_reservation) ... ok
+test_negative_invalid_json_in_file_is_handled (tests.test_services.TestReservationSystem.test_negative_invalid_json_in_file_is_handled) ... ok
+test_negative_modify_customer_invalid_data (tests.test_services.TestReservationSystem.test_negative_modify_customer_invalid_data) ... ok
+test_negative_reservation_fails_if_customer_not_found (tests.test_services.TestReservationSystem.test_negative_reservation_fails_if_customer_not_found) ... ok
+test_negative_reservation_fails_if_hotel_not_found (tests.test_services.TestReservationSystem.test_negative_reservation_fails_if_hotel_not_found) ... ok
+test_negative_reservation_fails_when_full (tests.test_services.TestReservationSystem.test_negative_reservation_fails_when_full) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.005s
+
+OK
