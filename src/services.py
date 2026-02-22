@@ -132,3 +132,77 @@ class HotelService:
 
         self._reservations_store.save_list([r.to_dict() for r in updated])
         return changed
+
+
+class CustomerService:
+    """Customer CRUD operations."""
+
+    def __init__(self, customers_store: JsonStore) -> None:
+        self._customers_store = customers_store
+
+    def create_customer(self, name: str, email: str) -> Customer:
+        """Create and persist a new customer."""
+        customer = Customer(
+            customer_id=str(uuid4()),
+            name=name.strip(),
+            email=email.strip(),
+        )
+        customers = self._customers_store.load_entities(Customer.from_dict)
+        customers.append(customer)
+        self._customers_store.save_list([c.to_dict() for c in customers])
+        return customer
+
+    def delete_customer(self, customer_id: str) -> bool:
+        """Delete customer by id."""
+        customers = self._customers_store.load_entities(Customer.from_dict)
+        before = len(customers)
+        customers = [c for c in customers if c.customer_id != customer_id]
+        self._customers_store.save_list([c.to_dict() for c in customers])
+        return len(customers) != before
+
+    def get_customer(self, customer_id: str) -> Optional[Customer]:
+        """Get customer information by id."""
+        customers = self._customers_store.load_entities(Customer.from_dict)
+        for customer in customers:
+            if customer.customer_id == customer_id:
+                return customer
+        return None
+
+    def modify_customer(
+        self,
+        customer_id: str,
+        name: Optional[str] = None,
+        email: Optional[str] = None,
+    ) -> bool:
+        """Modify customer fields (partial update)."""
+        customers = self._customers_store.load_entities(Customer.from_dict)
+        updated: List[Customer] = []
+        changed = False
+
+        for customer in customers:
+            if customer.customer_id != customer_id:
+                updated.append(customer)
+                continue
+
+            new_name = customer.name if name is None else name.strip()
+            new_email = customer.email if email is None else email.strip()
+            if not new_name or not new_email:
+                print("[ERROR] Invalid customer modification data.")
+                updated.append(customer)
+                continue
+
+            updated.append(
+                Customer(
+                    customer_id=customer.customer_id,
+                    name=new_name,
+                    email=new_email,
+                )
+            )
+            changed = True
+
+        self._customers_store.save_list([c.to_dict() for c in updated])
+        return changed
+
+    def list_customers(self) -> List[Customer]:
+        """Return all customers."""
+        return self._customers_store.load_entities(Customer.from_dict)
