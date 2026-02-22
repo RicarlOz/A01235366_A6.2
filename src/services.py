@@ -1,4 +1,7 @@
-"""Services implementing required behaviors for Hotel, Customer and Reservation."""
+"""
+Services implementing required behaviors for
+Hotel, Customer and Reservation.
+"""
 
 from __future__ import annotations
 
@@ -13,11 +16,20 @@ from src.storage import JsonStore
 class HotelService:
     """Hotel operations + room reservation/cancellation (hotel perspective)."""
 
-    def __init__(self, hotels_store: JsonStore, reservations_store: JsonStore) -> None:
+    def __init__(
+        self,
+        hotels_store: JsonStore,
+        reservations_store: JsonStore
+    ) -> None:
         self._hotels_store = hotels_store
         self._reservations_store = reservations_store
 
-    def create_hotel(self, name: str, location: str, total_rooms: int) -> Hotel:
+    def create_hotel(
+        self,
+        name: str,
+        location: str,
+        total_rooms: int
+    ) -> Hotel:
         """Create and persist a new hotel."""
         hotel = Hotel(
             hotel_id=str(uuid4()),
@@ -67,9 +79,23 @@ class HotelService:
                 updated.append(hotel)
                 continue
 
-            new_name = hotel.name if name is None else name.strip()
-            new_location = hotel.location if location is None else location.strip()
-            new_total_rooms = hotel.total_rooms if total_rooms is None else total_rooms
+            new_name: str
+            if name is None:
+                new_name = hotel.name
+            else:
+                new_name = name.strip()
+
+            new_location: str
+            if location is None:
+                new_location = hotel.location
+            else:
+                new_location = location.strip()
+
+            new_total_rooms: int
+            if total_rooms is None:
+                new_total_rooms = hotel.total_rooms
+            else:
+                new_total_rooms = total_rooms
 
             if not new_name or not new_location or new_total_rooms < 1:
                 print("[ERROR] Invalid hotel modification data.")
@@ -89,14 +115,22 @@ class HotelService:
         self._hotels_store.save_list([h.to_dict() for h in updated])
         return changed
 
-    def reserve_room(self, hotel_id: str, customer_id: str) -> Optional[Reservation]:
-        """Reserve 1 room in a hotel; create an ACTIVE reservation if available."""
+    def reserve_room(
+        self,
+        hotel_id: str,
+        customer_id: str
+    ) -> Optional[Reservation]:
+        """
+        Reserve 1 room in a hotel; create an ACTIVE reservation if available.
+        """
         hotel = self.get_hotel(hotel_id)
         if hotel is None:
             print("[ERROR] Hotel not found.")
             return None
 
-        reservations = self._reservations_store.load_entities(Reservation.from_dict)
+        reservations = self._reservations_store.load_entities(
+            Reservation.from_dict
+            )
         active_count = sum(
             1 for r in reservations if r.hotel_id == hotel_id and r.is_active()
         )
@@ -116,7 +150,9 @@ class HotelService:
 
     def cancel_reservation(self, reservation_id: str) -> bool:
         """Cancel a reservation (set status to CANCELLED)."""
-        reservations = self._reservations_store.load_entities(Reservation.from_dict)
+        reservations = self._reservations_store.load_entities(
+            Reservation.from_dict
+            )
         updated: List[Reservation] = []
         changed = False
 
@@ -221,8 +257,15 @@ class ReservationService:
         self._hotel_service = hotel_service
         self._customer_service = customer_service
 
-    def create_reservation(self, hotel_id: str, customer_id: str) -> Optional[Reservation]:
-        """Create reservation if hotel and customer exist and there is availability."""
+    def create_reservation(
+        self,
+        hotel_id: str,
+        customer_id: str
+    ) -> Optional[Reservation]:
+        """
+        Create reservation if hotel and customer exist and
+        there is availability.
+        """
         customer = self._customer_service.get_customer(customer_id)
         if customer is None:
             print("[ERROR] Customer not found.")
