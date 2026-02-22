@@ -72,3 +72,51 @@ class Customer:
             "name": self.name,
             "email": self.email,
         }
+
+
+@dataclass(frozen=True)
+class Reservation:
+    """Represents a reservation: a customer reserves 1 room in a hotel."""
+    reservation_id: str
+    hotel_id: str
+    customer_id: str
+    status: str = "ACTIVE"
+
+    @staticmethod
+    def from_dict(data: Dict[str, Any]) -> "Reservation":
+        """Create a Reservation from a dict, validating required fields."""
+        reservation_id = _require_str(data.get("reservation_id"), "reservation_id")
+        hotel_id = _require_str(data.get("hotel_id"), "hotel_id")
+        customer_id = _require_str(data.get("customer_id"), "customer_id")
+        status = data.get("status", "ACTIVE")
+        status_str = _require_str(status, "status")
+        if status_str not in {"ACTIVE", "CANCELLED"}:
+            raise ValueError("Invalid 'status': must be ACTIVE or CANCELLED.")
+        return Reservation(
+            reservation_id=reservation_id,
+            hotel_id=hotel_id,
+            customer_id=customer_id,
+            status=status_str,
+        )
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Serialize reservation to dict."""
+        return {
+            "reservation_id": self.reservation_id,
+            "hotel_id": self.hotel_id,
+            "customer_id": self.customer_id,
+            "status": self.status,
+        }
+
+    def is_active(self) -> bool:
+        """Return True if reservation is active."""
+        return self.status == "ACTIVE"
+
+    def cancelled(self) -> "Reservation":
+        """Return a copy of the reservation with CANCELLED status."""
+        return Reservation(
+            reservation_id=self.reservation_id,
+            hotel_id=self.hotel_id,
+            customer_id=self.customer_id,
+            status="CANCELLED",
+        )
