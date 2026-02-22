@@ -48,3 +48,27 @@ class Hotel:
             "location": self.location,
             "total_rooms": self.total_rooms,
         }
+
+
+@dataclass(frozen=True)
+class Customer:
+    """Represents a customer entity."""
+    customer_id: str
+    name: str
+    email: str
+
+    @staticmethod
+    def from_dict(data: Dict[str, Any]) -> "Customer":
+        """Create a Customer from a dict, validating required fields."""
+        customer_id = _require_str(data.get("customer_id"), "customer_id")
+        name = _require_str(data.get("name"), "name")
+        email = _require_str(data.get("email"), "email")
+        return Customer(customer_id=customer_id, name=name, email=email)
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Serialize customer to dict."""
+        return {
+            "customer_id": self.customer_id,
+            "name": self.name,
+            "email": self.email,
+        }
