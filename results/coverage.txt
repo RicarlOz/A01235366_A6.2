@@ -1,10 +1,11 @@
 Name                     Stmts   Miss  Cover   Missing
 ------------------------------------------------------
 src/__init__.py              0      0   100%
-src/models.py               61      3    95%   11, 19, 101
+src/models.py               61      2    97%   19, 101
 src/services.py            146     18    88%   79-80, 84, 92, 98, 101-103, 164, 193-197, 220-221, 244, 281
-src/storage.py              44     11    75%   33-35, 38-41, 48-49, 60-61, 69-70
+src/storage.py              44      0   100%
 tests/__init__.py            0      0   100%
 tests/test_services.py      86      0   100%
+tests/test_storage.py       54      0   100%
 ------------------------------------------------------
-TOTAL                      337     32    91%
+TOTAL                      391     20    95%
