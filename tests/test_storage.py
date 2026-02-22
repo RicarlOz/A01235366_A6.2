@@ -1,7 +1,5 @@
 """Unit tests for JsonStore error handling paths."""
 
-# pylint: disable=missing-function-docstring
-
 from __future__ import annotations
 
 import io
@@ -21,6 +19,10 @@ class TestJsonStore(unittest.TestCase):
     """Tests focused on JsonStore resilience and error handling."""
 
     def setUp(self) -> None:
+        """
+        Create an isolated temporary storage file and JsonStore instance
+        for each test.
+        """
         self.data_dir = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.data_dir)
 
@@ -28,9 +30,11 @@ class TestJsonStore(unittest.TestCase):
         self.store = JsonStore(self.file_path)
 
     def test_load_list_returns_empty_when_file_missing(self) -> None:
+        """Verify that loading a missing file returns an empty list."""
         self.assertEqual([], self.store.load_list())
 
     def test_load_list_handles_non_list_json(self) -> None:
+        """Ensure non-list JSON structures are handled safely."""
         self.file_path.write_text(json.dumps({"a": 1}), encoding="utf-8")
         buf = io.StringIO()
         with redirect_stdout(buf):
@@ -39,6 +43,7 @@ class TestJsonStore(unittest.TestCase):
         self.assertIn("expected a list", buf.getvalue())
 
     def test_load_list_skips_non_dict_items(self) -> None:
+        """Ensure non-dictionary items in JSON list are skipped."""
         self.file_path.write_text(
             json.dumps([{"ok": True}, 123, "x"]),
             encoding="utf-8"
@@ -50,7 +55,10 @@ class TestJsonStore(unittest.TestCase):
         self.assertIn("expected dict", buf.getvalue())
 
     def test_load_list_handles_os_error_on_read(self) -> None:
-        """It should print an error and return [] when file read fails."""
+        """
+        Ensure read errors are handled without crashing and return an
+        empty list.
+        """
         # Ensure file exists so it passes the exists() check
         self.file_path.write_text("[]", encoding="utf-8")
 
@@ -63,6 +71,7 @@ class TestJsonStore(unittest.TestCase):
         self.assertIn("Could not read", buf.getvalue())
 
     def test_save_list_handles_os_error_on_write(self) -> None:
+        """Ensure write errors are handled without crashing."""
         with patch.object(Path, "write_text", side_effect=OSError("boom")):
             buf = io.StringIO()
             with redirect_stdout(buf):
@@ -70,6 +79,7 @@ class TestJsonStore(unittest.TestCase):
         self.assertIn("Could not write", buf.getvalue())
 
     def test_load_entities_skips_invalid_entities(self) -> None:
+        """Ensure invalid entities are skipped during entity loading."""
         # One valid hotel dict and one invalid hotel dict (missing fields)
         self.file_path.write_text(
             json.dumps(
