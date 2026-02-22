@@ -206,3 +206,49 @@ class CustomerService:
     def list_customers(self) -> List[Customer]:
         """Return all customers."""
         return self._customers_store.load_entities(Customer.from_dict)
+
+
+class ReservationService:
+    """Reservation behaviors (create/cancel) as an explicit abstraction."""
+
+    def __init__(
+        self,
+        reservations_store: JsonStore,
+        hotel_service: HotelService,
+        customer_service: CustomerService,
+    ) -> None:
+        self._reservations_store = reservations_store
+        self._hotel_service = hotel_service
+        self._customer_service = customer_service
+
+    def create_reservation(self, hotel_id: str, customer_id: str) -> Optional[Reservation]:
+        """Create reservation if hotel and customer exist and there is availability."""
+        customer = self._customer_service.get_customer(customer_id)
+        if customer is None:
+            print("[ERROR] Customer not found.")
+            return None
+        return self._hotel_service.reserve_room(hotel_id, customer_id)
+
+    def cancel_reservation(self, reservation_id: str) -> bool:
+        """Cancel reservation by id."""
+        return self._hotel_service.cancel_reservation(reservation_id)
+
+    def list_reservations(self) -> List[Reservation]:
+        """Return all reservations (including cancelled)."""
+        return self._reservations_store.load_entities(Reservation.from_dict)
+
+
+def build_services(
+    data_dir: Path,
+) -> tuple[HotelService, CustomerService, ReservationService]:
+    """Factory to build services pointing to a given data directory."""
+    hotels_store = JsonStore(data_dir / "hotels.json")
+    customers_store = JsonStore(data_dir / "customers.json")
+    reservations_store = JsonStore(data_dir / "reservations.json")
+
+    hotel_service = HotelService(hotels_store, reservations_store)
+    customer_service = CustomerService(customers_store)
+    reservation_service = ReservationService(
+        reservations_store, hotel_service, customer_service
+    )
+    return hotel_service, customer_service, reservation_service
