@@ -10,7 +10,9 @@ from src.services import build_services
 def main() -> None:
     """Run a small interactive demo."""
     data_dir = Path("data")
-    hotel_service, customer_service, reservation_service = build_services(data_dir)
+    hotel_service, customer_service, reservation_service = (
+        build_services(data_dir)
+    )
 
     print("Reservation System Demo")
     print("1) Create hotel")
@@ -78,6 +80,7 @@ def handle_cancel_reservation(reservation_service):
     reservation_id = input("Reservation id: ").strip()
     ok = reservation_service.cancel_reservation(reservation_id)
     print("Cancelled" if ok else "Not cancelled")
+
 
 if __name__ == "__main__":
     main()
