@@ -8,13 +8,17 @@ from typing import Any, Dict
 
 def _require_str(value: Any, field_name: str) -> str:
     if not isinstance(value, str) or not value.strip():
-        raise ValueError(f"Invalid '{field_name}': must be a non-empty string.")
+        raise ValueError(
+            f"Invalid '{field_name}': must be a non-empty string."
+            )
     return value.strip()
 
 
 def _require_int(value: Any, field_name: str, min_value: int = 0) -> int:
     if not isinstance(value, int) or value < min_value:
-        raise ValueError(f"Invalid '{field_name}': must be an int >= {min_value}.")
+        raise ValueError(
+            f"Invalid '{field_name}': must be an int >= {min_value}."
+            )
     return value
 
 
@@ -85,7 +89,10 @@ class Reservation:
     @staticmethod
     def from_dict(data: Dict[str, Any]) -> "Reservation":
         """Create a Reservation from a dict, validating required fields."""
-        reservation_id = _require_str(data.get("reservation_id"), "reservation_id")
+        reservation_id = _require_str(
+            data.get("reservation_id"),
+            "reservation_id"
+            )
         hotel_id = _require_str(data.get("hotel_id"), "hotel_id")
         customer_id = _require_str(data.get("customer_id"), "customer_id")
         status = data.get("status", "ACTIVE")
