@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "hotel_id": "49df8823-1c2f-477a-8674-0443df4206d2",
+    "name": "City express",
+    "location": "Monterrey",
+    "total_rooms": 35
+  },
+  {
+    "hotel_id": "7a66756a-4372-47e3-af3a-de78e0cab553",
+    "name": "Marriot",
+    "location": "San Pedro",
+    "total_rooms": 40
+  }
+]

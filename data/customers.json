@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "customer_id": "b4454b18-16bd-481c-ab46-02a8943c82ac",
+    "name": "Ricardo",
+    "email": "ricardo@tec.mx"
+  },
+  {
+    "customer_id": "b4df27f1-f269-4d3b-8e69-0a55a3da82cc",
+    "name": "Pedro",
+    "email": "pedro@tec.mx"
+  }
+]
